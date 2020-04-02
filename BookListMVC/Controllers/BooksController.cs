@@ -43,6 +43,28 @@ namespace BookListMVC.Controllers
             return View(Book);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Upsert()
+        {
+            // check model state
+            if (!ModelState.IsValid)
+            {
+                return View(Book);
+            }
+
+            if (Book.Id == 0) // create
+            {
+                _db.Books.Add(Book);
+            }
+            else // update
+            {
+                _db.Books.Update(Book);
+            }
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
         #region API Calls
 
         [HttpGet]
